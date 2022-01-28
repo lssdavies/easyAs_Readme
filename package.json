@@ -1,0 +1,26 @@
+{
+  "name": "easyas_readme",
+  "version": "1.0.0",
+  "description": "a node application that generates a professional readme after collecting data from user inputs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lssdavies/easyAs_Readme.git"
+  },
+  "keywords": [
+    "readme",
+    "generator"
+  ],
+  "author": "Larry Davies",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lssdavies/easyAs_Readme/issues"
+  },
+  "homepage": "https://github.com/lssdavies/easyAs_Readme#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
+}
