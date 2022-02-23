@@ -1,52 +1,52 @@
 // TODO: Include packages needed for this application
 //Importing modules needed for the app.
-const fs = require("fs");
-const inquirer = require("inquirer");
+const fs = require('fs');
+const inquirer = require('inquirer');
+const generateMarkdown = require('./utils/generateMarkdown')
+const path = require('path');
 
 // TODO: Create an array of questions for user input
 //this caputers the users initial data name, github and email*/
-const contactInfoQuestions = [
+const readMeQuestions = [
   {
-    type: "input",
-    name: "name",
-    message: "What is your name?",
+    type: 'input',
+    name: 'name',
+    message: 'What is your name?',
     validate: (nameInput) => {
       if (nameInput) {
         return true;
       } else {
-        console.log("Please enter your name!");
+        console.log('Please enter your name!');
         return false;
       }
     },
   },
   {
-    type: "input",
-    name: "github",
-    message: "What is your GitHub Username?",
+    type: 'input',
+    name: 'github',
+    message: 'What is your GitHub Username?',
     validate: (githubInput) => {
       if (githubInput) {
         return true;
       } else {
-        console.log("Please enter your Github Username!");
+        console.log('Please enter your Github Username!');
         return false;
       }
     },
   },
   {
-    type: "input",
-    name: "email",
-    message: "What is your email address?",
+    type: 'input',
+    name: 'email',
+    message: 'What is your email address?',
     validate: (emailInput) => {
       if (emailInput) {
         return true;
       } else {
-        console.log("Please enter your Github Username!");
+        console.log('Please enter your Github Username!');
         return false;
       }
     },
   },
-];
-const projectContentQuestions = [
   {
     type: 'input',
     name: 'title',
@@ -80,13 +80,19 @@ const projectContentQuestions = [
   },
   {
     type: 'input',
-    name: 'additional_2',
+    name: 'additional_1',
     message: 'Why did you build this project? (optional)',
   },
   {
     type: 'input',
-    name: 'additional_3',
+    name: 'additional_2',
     message: 'What problem does it solve? (optional)',
+  },
+  {
+    type: 'checkbox',
+    name: 'technologies',
+    message: 'What technolgies did you implement in your project?',
+    choices: ['HTML', 'CSS', 'JavaScript', 'Node', 'Express', 'SQL'],
   },
   {
     type: 'input',
@@ -101,9 +107,9 @@ const projectContentQuestions = [
     message: 'Please provide instructions on for using this project.',
   },
   {
-    type: 'list',
+    type: 'checkbox',
     name: 'license',
-    message: 'What kind of license should your project have?',
+    message: 'What kind of license does your project have?',
     choices: ['MIT', 'APACHE 2.0', 'GPL 3.0', 'BSD 3', 'None'],
   },
   {
@@ -117,9 +123,9 @@ const projectContentQuestions = [
     name: 'runTest',
     message: 'What is the test command to test the app?',
     default: 'npm test',
-    /*using when property to check if user will like to added a test to the app by looking at the response test*/
-     when: ({ runTest }) => {
-        if (runTest) {
+    /*using when property to check if user will like to add a test to the app by looking at the response from test*/
+     when: ({ test }) => {
+        if (test) {
           return true;
         } else {
           return false;
@@ -131,29 +137,33 @@ const projectContentQuestions = [
     name: 'contributing',
     message: 'Please advise on how you will like users to contribute to the repo?',
   },
-  
 ];
 
 // TODO: Create a function to write README file
-// function writeToFile(fileName, data) {}
+//function writeToFile(fileName, data) {}
+//Passing 2 arguments to the function  file name and data returned from the promise inquirer.prompt()
+const writeToFile = (fileName, answers) => {
+  return fs.writeFile(fileName, answers, function(err) {
+    if (err)  {
+      console.log(err);
+    }
+  });
+
+}
+
+
+
+
+
 
 // TODO: Create a function to initialize app
 const init = () => {
   console.log(`
   
 In order for easyAs_Readme to generate a README.md file for your
-project well need to collect some personal data and contact information from you.
+project we'll need to collect some personal data and contact information from you.
 
 ============================================================================
-    `);
-
-  return inquirer.prompt(contactInfoQuestions);
-};
-
-// secondary function to store
-const promptProjectContent = (markdownData) =>  {
-    console.log(`
-===========================================================================
 
 easyAs_Readme will generate a Table of Contents using the following Sections:
 
@@ -168,18 +178,19 @@ easyAs_Readme will generate a Table of Contents using the following Sections:
 So please answer as many questions as possible to ensure we have data for
 each section.
 ===========================================================================
-    
-    `)
-    console.log(markdownData);
-    return inquirer.prompt(projectContentQuestions)
-    
-    
-}
+    `);
+
+  inquirer.prompt(readMeQuestions)
+    .then((answers) =>  {
+      console.log(answers);
+      console.log('Creating Your professional README');
+      writeToFile('./README.md', generateMarkdown({ ...answers }));
+      // writeToFile('README.md', generateMarkdown({ ...answers }));
+
+    })
+  
+};
 
 // Function call to initialize app
 init()
-.then(promptProjectContent)
-// .then(markdownData => {
-
-// } );
 
